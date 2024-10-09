@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request,render_template
+from flask import Flask, jsonify, request,render_template, url_for
 from flask_migrate import Migrate
 from .model import User, db
  
@@ -16,8 +16,21 @@ def create_app():
     app.secret_key = 'Hello'
 
 
+    
     # Initialize the database
     db.init_app(app)
+        # DEV-IT contact email for account deletion
+    DEVIT_EMAIL = "contact@devitforum.com"
+
+    @app.route('/delete-account', methods=['GET'])
+    def delete_account():
+        # Generate the URL for the Play Store account deletion process
+        playstore_link = url_for('playstore_account_deletion', _external=True)
+        return render_template('delete_account.html', email=DEVIT_EMAIL, playstore_link=playstore_link)
+
+    @app.route('/playstore-account-deletion', methods=['GET'])
+    def playstore_account_deletion():
+        return "Account deletion process initiated. Please contact DEV-IT for further assistance."
 
    
 
