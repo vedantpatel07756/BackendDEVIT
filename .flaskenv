@@ -1,2 +1,7 @@
 FLASK_ENV=development
 FLASK_APP=app.py
+S3_BUCKET=devitapp
+S3_ACCESS_KEY=AKIA4HWJUIFV7QKGFWD5
+S3_SECRET_KEY=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
+S3_REGION=ap-southeast-2
+SQLALCHEMY_DATABASE_URI=postgresql://avnadmin:AVNS_zkSIWdIFhGdIBINeh44@pg-3134c6ee-kdkce-c5a4.i.aivencloud.com:24895/defaultdb?sslmode=require

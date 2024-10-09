@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4; /* Light grey background for a modern look */
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ff9800; /* Orange color */
+            padding: 20px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-container input,
+        .filter-container select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 30%;
+            margin-right: 10px;
+        }
+
+        .filter-container input {
+            flex-grow: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #ff9800; /* Orange color */
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        tbody tr {
+            background-color: #ffffff;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px; /* Space between rows */
+        }
+
+        tbody tr:hover {
+            background-color: #f9f9f9; /* Lighter shade on hover */
+        }
+
+        td {
+            padding: 10px;
+            text-align: left;
+            border: none; /* Remove borders from table cells */
+        }
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px; /* Space between image and text */
+        }
+
+        .pending-container {
+            background-color: #ff9800; /* Orange background */
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            cursor: pointer; /* Makes the container clickable */
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .pending-container:hover {
+            background-color: #e68a00; /* Slightly darker shade on hover */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>User Dashboard</h1>
+    </header>
+
+    
+
+
+    <div class="container">
+
+
+          <!-- Clickable container for Pending Requests -->
+
+          <div class="pending-container" id="pendingRequestContainer">
+            View Pending Requests
+        </div>
+    
+
+        <div class="filter-container">
+            <input type="text" placeholder="Search by Name or Email" id="searchInput">
+            <select id="branchFilter">
+                <option value="">Select Branch</option>
+                <option value="CSE">CSE</option>
+                <option value="IT">IT</option>
+                <option value="ME">ME</option>
+                <option value="CE">CE</option>
+                <!-- Add more branches as needed -->
+            </select>
+            <select id="yearFilter">
+                <option value="">Select Year</option>
+                <option value="1st">1st</option>
+                <option value="2nd">2nd</option>
+                <option value="3rd">3rd</option>
+                <option value="4th">4th</option>
+            </select>
+            <select id="postFilter">
+                <option value="">Select Post</option>
+                <option value="Member">Member</option>
+                <option value="Manager">Manager</option>
+                <option value="Admin">Admin</option>
+            </select>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Photo</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Year</th>
+                    <th>Branch</th>
+                    <th>Post</th>
+                    <th>Verified</th>
+                    <th>Attendance</th>
+                    <th>Total Points</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td><img src="{{ user.photo }}" alt="User Photo"></td>
+                    <td>{{ user.fullname }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phonenumber }}</td>
+                    <td>{{ user.year }}</td>
+                    <td>{{ user.branch }}</td>
+                    <td>{{ user.post }}</td>
+                    <td>{{ user.verify }}</td>
+                    <td>{{ user.attendance }}</td>
+                    <td>{{ user.total_point }}</td>
+                    <td>{{ user.password }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+
+        // Pending Request 
+        document.getElementById('pendingRequestContainer').addEventListener('click', function() {
+            window.location.href = "{{ url_for('webpage.pendingrequest') }}";  // Flask URL redirection
+        });
+        // Simple filtering function for the table
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const branchFilter = document.getElementById('branchFilter');
+            const yearFilter = document.getElementById('yearFilter');
+            const postFilter = document.getElementById('postFilter');
+            const userTableBody = document.getElementById('userTableBody');
+
+            function filterUsers() {
+                const searchText = searchInput.value.toLowerCase();
+                const branchValue = branchFilter.value;
+                const yearValue = yearFilter.value;
+                const postValue = postFilter.value;
+
+                const rows = userTableBody.getElementsByTagName('tr');
+
+                for (let row of rows) {
+                    const userFullName = row.cells[2].innerText.toLowerCase();
+                    const userEmail = row.cells[3].innerText.toLowerCase();
+                    const userBranch = row.cells[6].innerText;
+                    const userYear = row.cells[5].innerText;
+                    const userPost = row.cells[7].innerText;
+
+                    const matchesSearch = userFullName.includes(searchText) || userEmail.includes(searchText);
+                    const matchesBranch = branchValue === '' || userBranch === branchValue;
+                    const matchesYear = yearValue === '' || userYear === yearValue;
+                    const matchesPost = postValue === '' || userPost === postValue;
+
+                    if (matchesSearch && matchesBranch && matchesYear && matchesPost) {
+                        row.style.display = ''; // Show the row
+                    } else {
+                        row.style.display = 'none'; // Hide the row
+                    }
+                }
+            }
+
+            // Add event listeners for filters
+            searchInput.addEventListener('input', filterUsers);
+            branchFilter.addEventListener('change', filterUsers);
+            yearFilter.addEventListener('change', filterUsers);
+            postFilter.addEventListener('change', filterUsers);
+        });
+    </script>
+</body>
+</html>

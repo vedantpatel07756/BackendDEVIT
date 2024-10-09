@@ -3,9 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden; /* Ensures circles stay within the viewport */
+        }
+
+        .login-container {
+            
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: white;
+            z-index: 10; /* Ensures the login form stays above the circles */
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 100px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #FF6600; /* Orange color */
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #FF6600; /* Orange */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-btn:hover {
+            background-color: #e65c00; /* Darker Orange */
+        }
+
+        /* Orange circle decorations */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: #FF6600;
+            opacity: 0.3;
+        }
+
+        .circle1 {
+            width: 200px;
+            height: 200px;
+            top: -50px;
+            left: -50px;
+        }
+
+        .circle2 {
+            width: 150px;
+            height: 150px;
+            bottom: -40px;
+            right: -40px;
+        }
+
+        .circle3 {
+            width: 250px;
+            height: 250px;
+            top: 200px;
+            right: -100px;
+        }
+
+        .circle4 {
+            width: 100px;
+            height: 100px;
+            bottom: 100px;
+            left: -80px;
+        }
+
+        .circle5 {
+            width: 80px;
+            height: 80px;
+            top: 60px;
+            right: 60px;
+        }
+
+        .circle6 {
+            width: 280px;
+            height: 280px;
+            top: 460px;
+            right: 360px;
+        }
+
+        .circle7 {
+            width: 280px;
+            height: 280px;
+            top: 150px;
+            left: 380px;
+        }
+
+        .circle8 {
+            width: 200px;
+            height: 200px;
+            top: 650px;
+            left: 250px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 20px;
+            }
+
+            .logo img {
+                width: 80px;
+            }
+
+            .circle {
+                display: none; /* Hide circles on smaller screens */
+            }
+        }
+    </style>
 </head>
 <body>
-    Hello Vedant
+
+    <!-- Orange circle decorations -->
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+    <div class="circle circle4"></div>
+    <div class="circle circle5"></div>
+    <div class="circle circle6"></div>
+    <div class="circle circle7"></div>
+    <div class="circle circle8"></div>
+
+    <!-- Login Form Container -->
+    <div class="login-container">
+        <!-- Logo Section -->
+        <div class="logo">
+            <!-- Placeholder for logo -->
+            <img src="{{ url_for('static', filename='appicon.png') }}" alt="Logo">
+        </div>
+
+        <!-- Login Form -->
+        <form action="/web/login" method="POST">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+    </div>
+
 </body>
 </html>

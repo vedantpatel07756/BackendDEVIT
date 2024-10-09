@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .model import Request, db, User
+from .model import Request, UserRole, db, User
 from datetime import datetime
 
 # from flask import Flask, request, jsonify
@@ -22,7 +22,7 @@ def submit_request():
         task_done = data.get('task_done')
         time_option = data.get('time_option')
         date=data.get('date')
-
+        desc=data.get('desc')
         # Validate user_id
         user = User.query.get(user_id)
         if not user:
@@ -33,9 +33,11 @@ def submit_request():
             date=date,
             start_time=start_time,
             end_time=end_time,
+            task_desc=desc,
             task_done=task_done,
             time_option=time_option,
-            user_id=user_id
+            user_id=user_id,
+
         )
 
         # Add to the database
@@ -49,10 +51,11 @@ def submit_request():
         return jsonify({"message": "Error submitting request"}), 500
     
 
+from datetime import datetime
 
 @request_bp.route('/user/requests/<int:userId>', methods=['GET'])
-def get_user_requests(userId):  # <--- Add userId as parameter here
-    user_id = userId  # Correcting the logic to get the userId from URL instead of request.args
+def get_user_requests(userId):  # Add userId as a parameter
+    user_id = userId  # Get userId from the URL parameter
     print(user_id)
 
     if not user_id:
@@ -62,12 +65,19 @@ def get_user_requests(userId):  # <--- Add userId as parameter here
         # Query the database for requests associated with the given user_id
         user_requests = Request.query.filter_by(user_id=user_id).all()
 
-        # Convert the query results to a list of dictionaries
+        # Query the UserRole table for the user's permission
+        user_role = UserRole.query.filter_by(user_id=user_id).first()
+        
+        # If the user role is found, get the permission; otherwise, set it to "None"
+        permission = user_role.permission if user_role else "None"
+        
+        # Convert the query results to a list of dictionaries and format date as dd-mm-yyyy
         requests_list = []
         for req in user_requests:
+            formatted_date = req.date.strftime('%d-%m-%Y')  # Format the date as dd-mm-yyyy
             requests_list.append({
                 'id': req.id,
-                'date': req.date.isoformat(),
+                'date': formatted_date,
                 'start_time': req.start_time.isoformat(),
                 'end_time': req.end_time.isoformat(),
                 'task_done': req.task_done,
@@ -75,14 +85,18 @@ def get_user_requests(userId):  # <--- Add userId as parameter here
                 'task_point': req.task_point
             })
 
-        # Return the data as JSON
-        return jsonify({'requests': requests_list}), 200
+        # Sort the requests list by date first, then by start_time (most recent date and time first)
+        requests_list.sort(key=lambda x: (datetime.strptime(x['date'], '%d-%m-%Y'), x['start_time']), reverse=True)
+
+        # Return the requests data along with the user's permission
+        return jsonify({
+            'requests': requests_list,
+            'permission': permission
+        }), 200
 
     except Exception as e:
         # Handle exceptions and return an error message
         return jsonify({'error': str(e)}), 500
-
-
 
 
 # Request Fetching all 
@@ -147,6 +161,7 @@ def serialize_request(request):
             'start_time': request.start_time.strftime('%H:%M'),  # Formatting time
             'end_time': request.end_time.strftime('%H:%M'),
             'task_done': request.task_done,
+            'task_desc':request.task_desc,
             'time_option': request.time_option,
             'user_id': request.user_id,
             'task_point': request.task_point,
@@ -157,12 +172,13 @@ def serialize_request(request):
         traceback.print_exc()
         return {}
 
-# Endpoint to retrieve all requests
+    
+
 @request_bp.route('/api/requests', methods=['GET'])
 def get_requests():
     try:
-        # Fetch all requests from the database
-        requests = Request.query.all()
+        # Fetch only requests where task_point is null
+        requests = Request.query.filter(Request.task_point == None).all()
 
         if not requests:
             return jsonify({
@@ -188,7 +204,6 @@ def get_requests():
             'message': 'An error occurred while fetching the requests',
             'details': str(e)
         }), 500
-    
 
 
 
