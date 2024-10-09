@@ -15,3 +15,10 @@ app = create_app()
 # git branch -M main
 # git remote add origin https://github.com/vedantpatel07756/BackendDEVIT.git
 # git push -u origin main
+
+# git init
+# git add README.md
+# git commit -m "first commit"
+# git branch -M main
+# git remote add origin https://github.com/DEV-IT2024/DEV-IT-APPBACKEND.git
+# git push -u origin main
